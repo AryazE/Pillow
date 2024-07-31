@@ -37,17 +37,10 @@ jobs:
       fail-fast: false
       matrix:
         os: [
-          "macos-14",
           "ubuntu-latest",
         ]
         python-version: [
-          "pypy3.10",
-          "pypy3.9",
-          "3.13",
-          "3.12",
           "3.11",
-          "3.10",
-          "3.9",
         ]
         include:
         - { python-version: "3.11", PYTHONOPTIMIZE: 1, REVERSE: "--reverse" }
@@ -88,9 +81,6 @@ jobs:
       run: |
         echo "PYTHON_GIL=0" >> $GITHUB_ENV
 
-    - name: Build system information
-      run: python3 .github/workflows/system-info.py
-
     - name: Cache libimagequant
       if: startsWith(matrix.os, 'ubuntu')
       uses: actions/cache@v4
@@ -106,13 +96,6 @@ jobs:
       env:
         GHA_PYTHON_VERSION: ${{ matrix.python-version }}
         GHA_LIBIMAGEQUANT_CACHE_HIT: ${{ steps.cache-libimagequant.outputs.cache-hit }}
-
-    - name: Install macOS dependencies
-      if: startsWith(matrix.os, 'macOS')
-      run: |
-        .github/workflows/macos-install.sh
-      env:
-        GHA_PYTHON_VERSION: ${{ matrix.python-version }}
 
     - name: Register gcc problem matcher
       if: "matrix.os == 'ubuntu-latest' && matrix.python-version == '3.12'"
