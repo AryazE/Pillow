@@ -97,6 +97,9 @@ jobs:
     - name: Build
       run: |
         .ci/build.sh
+    
+    - name: Instrument code
+      uses: AryazE/auto-dylin/instrument@main
 
     - name: Test
       run: |
@@ -113,6 +116,10 @@ jobs:
       env:
         PYTHONOPTIMIZE: ${{ matrix.PYTHONOPTIMIZE }}
         REVERSE: ${{ matrix.REVERSE }}
+    
+    - name: DyLin reports
+      if: always()
+      uses: AryazE/auto-dylin/report@main
 
     - name: Prepare to upload errors
       if: failure()
