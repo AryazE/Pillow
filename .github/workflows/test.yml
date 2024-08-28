@@ -100,6 +100,8 @@ jobs:
     
     - name: Instrument code
       uses: AryazE/auto-dylin/instrument@main
+      with:
+        analysis-coverage: false
 
     - name: Test
       run: |
@@ -120,30 +122,6 @@ jobs:
     - name: DyLin reports
       if: always()
       uses: AryazE/auto-dylin/report@main
-
-    - name: Prepare to upload errors
-      if: failure()
-      run: |
-        mkdir -p Tests/errors
-
-    - name: Upload errors
-      uses: actions/upload-artifact@v4
-      if: failure()
-      with:
-        name: errors
-        path: Tests/errors
-
-    - name: After success
-      run: |
-        .ci/after_success.sh
-
-    - name: Upload coverage
-      uses: codecov/codecov-action@v4
-      with:
-        flags: ${{ matrix.os == 'ubuntu-latest' && 'GHA_Ubuntu' || 'GHA_macOS' }}
-        name: ${{ matrix.os }} Python ${{ matrix.python-version }}
-        gcov: true
-        token: ${{ secrets.CODECOV_ORG_TOKEN }}
 
   success:
     permissions:
